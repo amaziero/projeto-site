@@ -9,11 +9,12 @@ import { uploadAndMerge } from "@/lib/upload";
 import { downloadBlob } from "@/lib/donwload";
 import { toast } from "sonner";
 
-type Props = {
-  onSubmit?: (files: File[], setProgress: (p: number) => void) => Promise<void>;
-};
+// type Props = {
+//   onSubmit?: (files: File[], setProgress: (p: number) => void) => Promise<void>;
+// };
 
-export default function UploadDropzone({ onSubmit }: Props) {
+// export default function UploadDropzone({ onSubmit }: Props) {
+export default function UploadDropzone() {
   const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
