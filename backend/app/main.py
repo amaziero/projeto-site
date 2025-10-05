@@ -1,12 +1,20 @@
 # C:/repo/projeto/backend/.venv/Scripts/Activate.ps1
 # uvicorn app.main:app --reload
+# uvicorn app.main:app --reload --host localhost --port 8000
 
 # http://127.0.0.1:8000/docs
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.core.middlaware import limit_upload_size
 from app.core.config import settings
 from app.api.routes import router as api_router
+
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
 
 def create_app() -> FastAPI:
     app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG)
@@ -21,3 +29,11 @@ def create_app() -> FastAPI:
     return app
 
 app = create_app()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=False,
+    allow_methods=["POST", "OPTIONS"],  # ou ["*"] para todos os métodos
+    allow_headers=["*"],  # permite Content-Type
+)
