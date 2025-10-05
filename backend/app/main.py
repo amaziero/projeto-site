@@ -15,6 +15,7 @@ from app.core.config import settings
 from app.api.routes import router as api_router
 
 origins = [
+    "https://projeto-site-wfoe.onrender.com",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
