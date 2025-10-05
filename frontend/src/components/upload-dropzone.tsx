@@ -86,7 +86,9 @@ export default function UploadDropzone() {
             accept="application/pdf"
             multiple
             className="hidden"
-            onChange={(e) => handleFiles(e.target.files)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              handleFiles(e.target.files)
+            }
           />
         </div>
 

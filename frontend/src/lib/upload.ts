@@ -3,7 +3,7 @@ import api from "./http";
 export async function uploadAndMerge(
   files: File[],
   onProgress: (p: number) => void
-) {
+): Promise<Blob> {
   const formData = new FormData();
   files.forEach((file) => formData.append("files", file));
 
