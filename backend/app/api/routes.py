@@ -54,7 +54,7 @@ async def merged_pdfs(files: list[UploadFile] = File(...)):
     
     for file in files:
         # chegar se a extensão do arquivo é .pdf
-        if not file.filename.endswith(".pdf"):
+        if not file.filename.lower().endswith(".pdf"):
             raise HTTPException(status_code=400, detail={
                 "erro": "tipo_invalido",
                 "arquivo": file.filename,
