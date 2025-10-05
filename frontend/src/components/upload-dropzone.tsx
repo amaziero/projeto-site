@@ -59,9 +59,15 @@ export default function UploadDropzone() {
       downloadBlob(blob); // inicia o download do PDF unificado
       setFiles([]);
       setProgress(0);
-    } catch (e: any) {
-      setError(e?.message ?? "Falha no envio.");
-      toast.error("Falha no envio.");
+    } catch (e: unknown) {
+      const message =
+        e instanceof Error
+          ? e.message
+          : typeof e === "string"
+          ? e
+          : "Falha no envio.";
+      setError(message);
+      toast.error(message);
     }
   }, [files]);
 
