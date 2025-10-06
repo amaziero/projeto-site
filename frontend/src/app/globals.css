@@ -120,3 +120,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+:root {
+  --background: #fefaf6;
+  --foreground: #4a3f35;
+  --primary: #947d5e;
+  --primary-foreground: #ffffff;
+  --secondary: #e0d5c6;
+  --secondary-foreground: #4a3f35;
+  --muted: #ede4d5;
+  --muted-foreground: #6b5e52;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Playfair Display", serif;
+}
