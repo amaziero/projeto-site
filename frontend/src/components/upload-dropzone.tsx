@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { uploadAndMerge } from "@/lib/upload";
-import { downloadBlob } from "@/lib/donwload";
+import { downloadBlob } from "@/lib/download";
 import { toast } from "sonner";
 import { Loader2, CheckCircle2 } from "lucide-react";
 
