@@ -12,7 +12,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.middlaware import limit_upload_size
 from app.core.config import settings
-from app.api.routes import router as api_router
+from app.api.routes.routes import router as api_router
+
+from app.api.routes.merge import router as merge_router
+from app.core.exceptions import DomainError, handle_domain_error
 
 origins = [
     "https://projeto-site-wfoe.onrender.com",
@@ -22,17 +25,20 @@ origins = [
 
 def create_app() -> FastAPI:
     app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG)
-
+    
     app.middleware("http")(
         limit_upload_size
     )
 
-    app.include_router(
-        api_router
-    )
+    app.include_router(merge_router)
+    app.include_router(api_router)
+
+    app.add_exception_handler(DomainError, handle_domain_error)
+    
     return app
 
 app = create_app()
+
 
 app.add_middleware(
     CORSMiddleware,
