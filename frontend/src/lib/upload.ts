@@ -7,7 +7,7 @@ export async function uploadAndMerge(
   const formData = new FormData();
   files.forEach((file) => formData.append("files", file));
 
-  const response = await api.post("/v1/merged-pdfs", formData, {
+  const response = await api.post("/v1/merge/merged-pdfs", formData, {
     responseType: "blob",
     onUploadProgress: (event) => {
       if (event.total) {
