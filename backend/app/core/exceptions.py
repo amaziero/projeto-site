@@ -37,6 +37,9 @@ class PDFJoinFaliure(DomainError):
     status_code = 400
     code = "join_faliure"
 
+class PageRangeError(DomainError):
+    status_code = 422
+    code = "page_range_invalid"
 
 # Handler global (um só para todos os DomainError)
 async def handle_domain_error(request, exc: DomainError):

@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.middlaware import limit_upload_size
 from app.core.config import settings
-from app.api.routes.routes import router as api_router
+from app.api.routes.split import router as api_router
 
 from app.api.routes.merge import router as merge_router
 from app.core.exceptions import DomainError, handle_domain_error
@@ -30,8 +30,8 @@ def create_app() -> FastAPI:
         limit_upload_size
     )
 
-    app.include_router(merge_router)
-    app.include_router(api_router)
+    app.include_router(merge_router, prefix="/v1")
+    app.include_router(api_router, prefix="/v1")
 
     app.add_exception_handler(DomainError, handle_domain_error)
     
