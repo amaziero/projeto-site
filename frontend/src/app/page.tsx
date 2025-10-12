@@ -34,7 +34,7 @@ const FEATURES: Feature[] = [
     description: "Separe por páginas ou intervalos.",
     href: "/split",
     icon: Scissors,
-    enabled: false,
+    enabled: true,
   },
   {
     key: "img",
