@@ -1,11 +1,16 @@
 # app/services/pdf_service.py
 from fastapi import UploadFile
+from fastapi.responses import StreamingResponse
 from app.core.exceptions import PageRangeError, InvalidPdfError, TooLargeError, EncryptedPdfError, PDFCorrupted, PDFJoinFaliure
 from pypdf import PdfReader, PdfWriter
 from io import BytesIO
 from typing import Tuple
 import re
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_STORED
+
+import pikepdf
+from tempfile import TemporaryFile
+from zipfile import ZipFile, ZIP_STORED
 
 
 MAX_BYTES = 10 * 1024 * 1024  # 10 MB
@@ -108,31 +113,50 @@ async def split_range(file: UploadFile, start: int, end: int) -> BytesIO:
 
     return out
 
-async def split_all(file: UploadFile) -> BytesIO:
-    # Lê o conteúdo do arquivo (bytes)
-    file_bytes = await file.read()
+# async def split_all(file: UploadFile) -> BytesIO:
+#     # file_bytes = await file.read()
     
-    reader = PdfReader(BytesIO(file_bytes))
+#     # Lê o conteúdo do arquivo (bytes)
+#     reader = PdfReader(file.file)  # em vez de reader = PdfReader(BytesIO(file_bytes)) ganha performance
 
-    total = len(reader.pages)
+#     total = len(reader.pages)
     
-    zip_buffer = BytesIO()
+#     zip_buffer = BytesIO()
     
-    with ZipFile(zip_buffer, 'w') as zip_file:
-        for i in range(total):
-            writer = PdfWriter()
-            writer.add_page(reader.pages[i])
+#     with ZipFile(zip_buffer, 'w', compression=ZIP_STORED) as zip_file:
+#         for i in range(total):
+#             writer = PdfWriter()
+#             writer.add_page(reader.pages[i])
 
-            # cria pdf dessa pagina em memoria
-            pdf_bytes = BytesIO()
-            writer.write(pdf_bytes)
-            pdf_bytes.seek(0)
+#             # cria pdf dessa pagina em memoria
+#             pdf_bytes = BytesIO()
+#             writer.write(pdf_bytes)
+#             pdf_bytes.seek(0)
 
-            filename = f'page_{str(i+1).zfill(4)}.pdf'
+#             filename = f'page_{str(i+1).zfill(4)}.pdf'
 
-            zip_file.writestr(filename, pdf_bytes.read())
+#             zip_file.writestr(filename, pdf_bytes.read())
 
-    # Posiciona o ponteiro no início do ZIP
-    zip_buffer.seek(0)
+#     # Posiciona o ponteiro no início do ZIP
+#     zip_buffer.seek(0)
 
-    return zip_buffer
+#     return zip_buffer
+
+async def split_all(file):
+    tmp_zip = TemporaryFile()  # NÃO use "with": precisamos devolver aberto
+    with ZipFile(tmp_zip, 'w', compression=ZIP_STORED) as zipf:
+        with pikepdf.open(file.file) as pdf:
+            for i, page in enumerate(pdf.pages, start=1):
+                new_pdf = pikepdf.Pdf.new()
+                new_pdf.pages.append(page)
+                with TemporaryFile() as tmp_pdf:
+                    new_pdf.save(tmp_pdf)
+                    tmp_pdf.seek(0)
+                    with zipf.open(f'page_{i:04}.pdf', 'w') as z:
+                        while True:
+                            chunk = tmp_pdf.read(1024 * 512)
+                            if not chunk:
+                                break
+                            z.write(chunk)
+    tmp_zip.seek(0)
+    return tmp_zip  # <- file-like pronto pro StreamingResponse
