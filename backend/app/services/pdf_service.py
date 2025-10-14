@@ -17,6 +17,9 @@ MAX_BYTES = 10 * 1024 * 1024  # 10 MB
 _RANGE_RE = re.compile(r"^\d+-\d+$")
 
 async def validate_pdf(file: UploadFile) -> None:
+    if not file:
+        raise InvalidPdfError("Necessário enviar ao menos 1 documento pdf.")
+    
     name = (file.filename or "").lower()
 
     if not name.endswith(".pdf"):
