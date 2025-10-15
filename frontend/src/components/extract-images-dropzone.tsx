@@ -122,8 +122,11 @@ export default function ExtractImagesDropzone() {
       setResult(out);
       setIsProcessing(false);
       toast.success("Imagens extraídas com sucesso!", { id: tId });
-    } catch (e: any) {
-      const msg = e?.message ?? "Falha ao extrair imagens.";
+    } catch (e: unknown) {
+      const msg =
+        typeof e === "object" && e !== null && "message" in e
+          ? (e as { message: string }).message
+          : String(e) || "Falha ao extrair imagens.";
       setError(msg);
       setIsProcessing(false);
       toast.error(msg, { id: tId });
