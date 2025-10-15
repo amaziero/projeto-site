@@ -40,9 +40,9 @@ const FEATURES: Feature[] = [
     key: "img",
     title: "Converter p/ Imagem",
     description: "Transforme páginas em PNG/JPG.",
-    href: "/to-image",
+    href: "/extract-images",
     icon: ImageIcon,
-    enabled: false,
+    enabled: true,
   },
   {
     key: "protect",
